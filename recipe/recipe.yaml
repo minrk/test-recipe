@@ -1,0 +1,109 @@
+context:
+  name: scifem-test
+  version: 0.2.13
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/s/scifem/scifem-${{ version }}.tar.gz
+  sha256: d05ba474729cd6122c2fde6284d3ff5e237cbe9b3006f62b2b717225a63852a9
+
+build:
+  number: 0
+  skip:
+    - win
+    # - match(python, "<3.10")
+
+requirements:
+  build:
+    # - ${{ compiler('c') }}
+    # - ${{ stdlib('c') }}
+    # - ${{ compiler('cxx') }}
+    - cmake
+    - make
+    - pkg-config
+    # - if: mpi == 'openmpi' and build_platform != target_platform
+    #   then: ${{ mpi }}
+    - if: build_platform != target_platform
+      then:
+        - cross-python_${{ target_platform }}
+        - python
+        - nanobind
+  host:
+    # - fenics-libbasix ${{ fenics_version }}
+    # - fenics-basix ${{ fenics_version }}
+    # - fenics-libdolfinx ${{ fenics_version }}
+    # - fenics-dolfinx ${{ fenics_version }}
+    # - ${{ mpi }}
+    # - petsc
+    # - petsc * ${{ scalar }}_*
+    - pip
+    - python
+    # - scikit-build-core
+    # - nanobind
+  run:
+    - python
+    # - fenics-basix
+    # - fenics-dolfinx
+    # - packaging
+    # - adios2 * mpi_${{ mpi }}_*
+  run_constraints:
+    # require mpi build of h5py
+    - h5py * mpi_${{ mpi }}_*
+
+tests:
+  - files:
+      source:
+        - tests/
+        # - also_tests/
+        # - '*'
+        # - '**/*.py'
+        # - 'tests/**/*'
+        # - 'src/'
+        # - 'src/**'
+        # - 'src/**/*'
+        # - 'src/*'
+        - 'pyproject.toml'
+      recipe:
+        - recipe.yaml
+    requirements:
+      run:
+        - pytest
+        # - petsc4py
+        # can't test h5py 
+        # until it gets builds for hdf5 1.14.4
+        # - h5py
+    script:
+      - pwd
+      - ls -la
+      - tree .
+      - ls -la info/tests
+      - export PYTEST_ADDOPTS="-k 'not h5py'"
+      - pytest -vs tests
+      - if: "mpi != 'openmpi'"
+        then: MPIEXEC_TIMEOUT=300 mpiexec -n 2 pytest -m "not serial" tests
+      - if: "mpi == 'openmpi'"
+        then: mpiexec --timeout=300 -n 2 pytest -m "not serial" tests
+  - python:
+      imports:
+        - json
+      pip_check: true
+
+about:
+  summary: Scientific Computing Tools for Finite Element Methods
+  description: |
+    This package contains a collection of tools for scientific computing with a focus on finite element methods.
+    The tools are written in Python and are intended to be used in conjunction with the dolfinx.
+  license: MIT
+  license_file: LICENSE
+  homepage: https://scientificcomputing.github.io/scifem
+  repository: https://github.com/scientificcomputing/scifem
+  documentation: https://scientificcomputing.github.io/scifem
+
+extra:
+  recipe-maintainers:
+    - finsberg
+    - jorgensd
+    - minrk
