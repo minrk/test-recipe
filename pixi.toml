@@ -1,0 +1,14 @@
+[project]
+authors = ["Min RK <benjaminrk@gmail.com>"]
+channels = ["conda-forge"]
+name = "test-recipe"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+rattler-build = "rattler-build build -v -r recipe -m recipe/conda_build_config.yaml"
+conda-build = "conda-build recipe -m recipe/conda_build_config.yaml"
+
+[dependencies]
+rattler-build = ">=0.38.0,<0.39"
+conda-build = ">=25.1.2,<26"
