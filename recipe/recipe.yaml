@@ -11,5 +11,6 @@ requirements:
     - ${{ stdlib('c') }}
 tests:
   - script:
+      - otool -L $PREFIX/lib/liba.dylib
       - otool -L $PREFIX/bin/b
       - b
