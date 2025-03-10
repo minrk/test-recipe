@@ -1,25 +1,15 @@
-context:
-  name: test-ignore
-  version: 0.0.0
-
 package:
-  name: ${{ name|lower }}
-  version: ${{ version }}
+  name: test-relink
+  version: 0.0.0
 
 build:
   number: 0
 
 requirements:
+  build:
+    - ${{ compiler('c') }}
+    - ${{ stdlib('c') }}
 tests:
-  - files:
-      source:
-        - ignored
-        - included
-      recipe:
-        - recipe.yaml
-    script:
-      - pwd
-      - ls -la
-      - tree .
-      - test -f included
-      - test -f ignored
+  - script:
+      - otool -L $PREFIX/bin/b
+      - b
