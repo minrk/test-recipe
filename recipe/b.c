@@ -1,5 +1,7 @@
+#include <stdio.h>
 #include "a.h"
 
 int main() {
-    a();
+  printf("hello from b\n");
+  a();
 }
