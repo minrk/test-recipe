@@ -8,6 +8,10 @@ mkdir -p $PREFIX/lib
 cp -v *${SHLIB_EXT} $PREFIX/lib/
 cp -v test_link $PREFIX/bin/test_link
 
+# store otool info for diffing
+otool -l libabsolute.dylib > $PREFIX/otool-libabsolute-before.txt
+otool -l librelative.dylib > $PREFIX/otool-librelative-before.txt
+otool -l test_link > $PREFIX/otool-test_link-before.txt
 # run test
 otool -L *${SHLIB_EXT} $PREFIX/bin/test_link
 test_link
