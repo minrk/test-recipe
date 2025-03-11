@@ -11,6 +11,8 @@ requirements:
     - {{ stdlib('c') }}
 test:
   commands:
-    - otool -L $PREFIX/lib/liba.dylib
-    - otool -L $PREFIX/bin/b
-    - b
+    - otool -l $PREFIX/lib/libabsolute.dylib  | grep -A 2 RPATH
+    - otool -l $PREFIX/lib/librelative.dylib  | grep -A 2 RPATH
+    - otool -l $PREFIX/bin/test_link  | grep -A 2 RPATH
+    - otool -L $PREFIX/lib/libabsolute.dylib $PREFIX/lib/librelative.dylib $PREFIX/bin/test_link
+    - test_link

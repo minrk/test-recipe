@@ -1,0 +1,2 @@
+void absolute();
+void relative();

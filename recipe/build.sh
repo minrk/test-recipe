@@ -1,14 +1,13 @@
-LIBNAME=a
-LIB=lib${LIBNAME}${SHLIB_EXT}
-$CC $CFLAGS $LDFLAGS -shared ${RECIPE_DIR}/a.c -o $LIB
-$CC $CFLAGS $LDFLAGS ${RECIPE_DIR}/b.c -L. -l${LIBNAME} -o b
+$CC $CFLAGS $LDFLAGS -shared -Wl,-install_name,$PREFIX/lib/libabsolute.dylib ${RECIPE_DIR}/absolute.c -o libabsolute.dylib
+$CC $CFLAGS $LDFLAGS -shared ${RECIPE_DIR}/relative.c -o librelative.dylib
+
+$CC $CFLAGS $LDFLAGS ${RECIPE_DIR}/test_link.c -L. -labsolute -lrelative -o test_link
 mkdir -p $PREFIX/bin
 mkdir -p $PREFIX/lib
 
-cp -v $LIB $PREFIX/lib/
-cp -v b $PREFIX/bin/b
+cp -v *${SHLIB_EXT} $PREFIX/lib/
+cp -v test_link $PREFIX/bin/test_link
 
 # run test
-otool -L $PREFIX/lib/$LIB
-otool -L $PREFIX/bin/b
-b
+otool -L *${SHLIB_EXT} $PREFIX/bin/test_link
+test_link
