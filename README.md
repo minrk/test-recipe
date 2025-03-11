@@ -1,22 +1,28 @@
-# Test recipe for source.files
+# Test recipe for relink on mac
 
-test recipe for https://github.com/prefix-dev/rattler-build/issues/1167
+test recipe for https://github.com/prefix-dev/rattler-build/pull/1476
 
-- .gitignore excludes `**/ignored`
-- rattler-build inappropriately applies this .gitignore when considering `files.source`
-- when the default `output-dir` is in the directory containing `.gitignore`, the `ignored` file is improperly excluded
-- placing `output-dir` outside the current directory results in correct files being included
+packages 3 files
+
+- `libabsolute` with `install_name=$PREFIX/lib/libabsolute.dylib`
+- `librelative` with default `install_name=librelative.dylib`
+- `test_link` executable, which links both
+
+conda-build rewrites the links for both libabsolute and librelative as `@rpath/libname.dylib`.
+rattler-build 0.38 doesn't update either one.
+The absolute rpath still works due to install-time rewriting,
+but the relative path fails to load.
 
 fails:
 
 ```
-rattler-build build -r recipe
+pixi run rattler-build
 ```
 
 succeeds:
 
 ```
-rattler-build build --output-dir=/tmp/output -r recipe
+pixi run conda-build
 ```
 
-The right fix is probably to ignore `.gitignore` altogether. It doesn't ever seem right to use it.
+https://github.com/prefix-dev/rattler-build/pull/1477 fixes rattler-build for this case.
