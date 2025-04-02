@@ -1,24 +1,6 @@
 package:
-  name: test-relink
+  name: test-cr
   version: 0.0.0
 
 build:
   number: 0
-
-requirements:
-  build:
-    - ${{ compiler('c') }}
-    - ${{ stdlib('c') }}
-tests:
-  - script:
-      - otool -L $PREFIX/lib/libabsolute.dylib $PREFIX/lib/librelative.dylib $PREFIX/bin/test_link
-      - otool -l $PREFIX/lib/libabsolute.dylib > otool-libabsolute-after.txt
-      - otool -l $PREFIX/lib/librelative.dylib > otool-librelative-after.txt
-      - otool -l $PREFIX/bin/test_link > otool-test_link-after.txt
-      - difft --color always $PREFIX/otool-libabsolute-before.txt otool-libabsolute-after.txt
-      - difft --color always $PREFIX/otool-librelative-before.txt otool-librelative-after.txt
-      - difft --color always $PREFIX/otool-test_link-before.txt otool-test_link-after.txt
-      - test_link
-    requirements:
-      run:
-        - difftastic

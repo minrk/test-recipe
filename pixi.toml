@@ -6,16 +6,16 @@ platforms = ["osx-arm64"]
 version = "0.1.0"
 
 [feature.rattler-build.tasks]
-rattler-build = "rattler-build build -v -r recipe -m recipe/conda_build_config.yaml"
+rattler-build = "rattler-build build -v -r recipe"
 
 [feature.rattler-build.dependencies]
-rattler-build = ">=0.38.0,<0.39"
+rattler-build = "*"
 
 [feature.conda-build.tasks]
-conda-build = "conda-build -c conda-forge recipe -m recipe/conda_build_config.yaml"
+conda-build = "conda-build -c conda-forge recipe"
 
 [feature.conda-build.dependencies]
-conda-build = ">=25.1.2,<26"
+conda-build = "*"
 
 [environments]
 rattler-build = { features = ["rattler-build"] }
