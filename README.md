@@ -1,28 +1,17 @@
-# Test recipe for relink on mac
+# Test recipe for streaming output with carriage-returns (CR)
 
-test recipe for https://github.com/prefix-dev/rattler-build/pull/1476
+test recipe for https://github.com/prefix-dev/rattler-build/issues/1525
 
-packages 3 files
+Runs a build script that rewrites lines with CR (`\r`)
 
-- `libabsolute` with `install_name=$PREFIX/lib/libabsolute.dylib`
-- `librelative` with default `install_name=librelative.dylib`
-- `test_link` executable, which links both
-
-conda-build rewrites the links for both libabsolute and librelative as `@rpath/libname.dylib`.
-rattler-build 0.38 doesn't update either one.
-The absolute rpath still works due to install-time rewriting,
-but the relative path fails to load.
-
-fails:
+rattler-build loses almost all output:
 
 ```
 pixi run rattler-build
 ```
 
-succeeds:
+conda-build preserves all output, treating CR as LF:
 
 ```
 pixi run conda-build
 ```
-
-https://github.com/prefix-dev/rattler-build/pull/1477 fixes rattler-build for this case.
