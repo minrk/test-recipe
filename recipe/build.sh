@@ -6,5 +6,5 @@ for i in {1..10}; do
   echo -ne "\rline ${i}"
   sleep 0.1
 done
-echo "\ndone"
+echo -e "\ndone"
 
